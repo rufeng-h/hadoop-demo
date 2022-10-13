@@ -11,6 +11,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.*;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author chunf
@@ -27,7 +28,7 @@ public class MyOutputFormat extends OutputFormat<Text, NullWritable> {
         char c = TaskID.getRepresentingCharacter(taskId.getTaskType());
         String s = String.valueOf(c) + taskId.getId();
         FileSystem fs = FileSystem.get(job.getConfiguration());
-        FSDataOutputStream outputStream = fs.create(new Path(getOutputPath(job), s));
+        FSDataOutputStream outputStream = fs.create(new Path(Objects.requireNonNull(getOutputPath(job)), s));
         return new MyRecordWriter(outputStream);
     }
 

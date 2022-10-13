@@ -23,5 +23,6 @@ public class CustomOutputMapper extends Mapper<LongWritable, Text, Text, NullWri
             text.set(word);
             context.write(text, NullWritable.get());
         }
+
     }
 }

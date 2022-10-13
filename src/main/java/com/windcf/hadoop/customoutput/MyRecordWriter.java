@@ -27,7 +27,7 @@ public class MyRecordWriter extends RecordWriter<Text, NullWritable> {
     }
 
     @Override
-    public void close(TaskAttemptContext context) throws IOException, InterruptedException {
+    public void close(TaskAttemptContext context) throws IOException {
         outputStream.close();
     }
 }
