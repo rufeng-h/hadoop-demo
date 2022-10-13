@@ -1,18 +1,21 @@
 package com.windcf.hadoop.orderjoin;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author chunf
@@ -28,19 +31,21 @@ public class OrderJoinMapper extends Mapper<LongWritable, Text, Text, OrderBean>
     private int curLine = 0;
 
     @Override
-    protected void setup(Mapper<LongWritable, Text, Text, OrderBean>.Context context) throws IOException, InterruptedException {
-        InputStream inputStream;
-        inputStream = Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("pd.txt"));
-        int i = 0;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            i += 1;
-            if (i == 1) {
-                continue;
+    protected void setup(Mapper<LongWritable, Text, Text, OrderBean>.Context context) throws IOException {
+        URI uri = context.getCacheFiles()[0];
+        FileSystem fs = FileSystem.get(context.getConfiguration());
+        FSDataInputStream inputStream = fs.open(new Path(uri));
+        int lc = 0;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while (StringUtils.isNotEmpty(line = reader.readLine())) {
+                lc += 1;
+                if (lc == 1) {
+                    continue;
+                }
+                String[] words = line.split("\\s");
+                PROD_MAP.put(words[0], words[1]);
             }
-            String[] words = line.split("\\s");
-            PROD_MAP.put(words[0], words[1]);
         }
     }
 

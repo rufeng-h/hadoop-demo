@@ -8,6 +8,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Objects;
 
 /**
  * @author chunf
@@ -16,7 +18,7 @@ import java.io.IOException;
  * @description TODO
  */
 public class OrderJoinDriver {
-    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, URISyntaxException {
         Configuration configuration = new Configuration();
         Job job = Job.getInstance(configuration);
 
@@ -29,6 +31,8 @@ public class OrderJoinDriver {
         job.setNumReduceTasks(0);
         FileInputFormat.setInputPaths(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        job.addCacheFile(Objects.requireNonNull(OrderJoinDriver.class.getClassLoader().getResource("pd.txt")).toURI());
 
         job.setOutputFormatClass(OrderJoinOutputFormat.class);
 
