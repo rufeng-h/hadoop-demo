@@ -54,6 +54,7 @@ public class OrderJoinMapper extends Mapper<LongWritable, Text, Text, OrderBean>
     @Override
     protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, OrderBean>.Context context) throws IOException, InterruptedException {
         curLine += 1;
+        System.out.println(key);
         if (curLine == 1) {
             return;
         }
