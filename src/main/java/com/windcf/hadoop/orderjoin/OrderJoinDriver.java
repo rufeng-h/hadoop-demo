@@ -35,6 +35,7 @@ public class OrderJoinDriver {
         job.addCacheFile(Objects.requireNonNull(OrderJoinDriver.class.getClassLoader().getResource("pd.txt")).toURI());
 
         job.setOutputFormatClass(OrderJoinOutputFormat.class);
+        job.setInputFormatClass(OrderJoinInputFormat.class);
 
         boolean result = job.waitForCompletion(true);
         System.exit(result ? 0 : 1);

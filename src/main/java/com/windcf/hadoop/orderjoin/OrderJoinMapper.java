@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,10 +37,11 @@ public class OrderJoinMapper extends Mapper<LongWritable, Text, Text, OrderBean>
         FileSystem fs = FileSystem.get(context.getConfiguration());
         FSDataInputStream inputStream = fs.open(new Path(uri));
         int lc = 0;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line;
             while (StringUtils.isNotEmpty(line = reader.readLine())) {
                 lc += 1;
+                /* skip the head */
                 if (lc == 1) {
                     continue;
                 }
